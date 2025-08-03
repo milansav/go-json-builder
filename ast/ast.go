@@ -104,6 +104,22 @@ func Array(_buildFn BuildFn) *Builder {
 	return builder
 }
 
+func Null() *Builder {
+	builder := _internal_CreateBuilder()
+
+	_node := &AstNode{
+		name:        "ast::Null",
+		astNodeType: NodeValue,
+		value: &AstValue{
+			astValueType: ValueNull,
+		},
+	}
+
+	builder.root = _node
+
+	return builder
+}
+
 func Value[T string | float64 | bool | int](val T) *Builder {
 	builder := _internal_CreateBuilder()
 
