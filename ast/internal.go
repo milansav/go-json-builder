@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func _internal_NotImplemented(method string) string {
+func _internal_NotImplemented(method string) {
 	panic(fmt.Errorf("Method not implemented; %s\n", method))
 }
 
