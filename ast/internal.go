@@ -25,33 +25,30 @@ func _internal_CreateArray() *AstArray {
 	}
 }
 
-func (object *AstNode) _internal_DumpValue(silent bool) string {
-	buffer := ""
+func (serializer *Serializer) _internal_DumpValue(object *AstNode, silent bool) {
 	if silent == false {
-		buffer = fmt.Sprintf("\"%s\":", object.name)
+		serializer.buffer += fmt.Sprintf("\"%s\":", object.name)
 	}
 
 	switch object.value.astValueType {
 	case ValueBool:
-		buffer += strconv.FormatBool(*object.value._bool)
+		serializer.buffer += strconv.FormatBool(*object.value._bool)
 	case ValueNumber:
-		buffer += strconv.FormatFloat(*object.value._number, 'g', 4, 64)
+		serializer.buffer += strconv.FormatFloat(*object.value._number, 'g', 4, 64)
 	case ValueString:
-		buffer += fmt.Sprintf("\"%s\"", *object.value._string)
+		serializer.buffer += fmt.Sprintf("\"%s\"", *object.value._string)
 	case ValueNull:
-		buffer += "null"
+		serializer.buffer += "null"
 	default:
-		buffer += "null"
+		serializer.buffer += "null"
 	}
-
-	return buffer
 }
 
-func (object *AstNode) _internal_DumpObject(silent bool) string {
-	buffer := "{"
-
+func (serializer *Serializer) _internal_DumpObject(object *AstNode, silent bool) {
 	if silent == false {
-		buffer = fmt.Sprintf("\"%s\":{", object.name)
+		serializer.buffer += fmt.Sprintf("\"%s\":{", object.name)
+	} else {
+		serializer.buffer += "{"
 	}
 
 	for index, element := range object.object.children {
@@ -60,28 +57,27 @@ func (object *AstNode) _internal_DumpObject(silent bool) string {
 		}
 		switch element.astNodeType {
 		case NodeValue:
-			buffer += element._internal_DumpValue(false)
+			serializer._internal_DumpValue(element, false)
 		case NodeObject:
-			buffer += element._internal_DumpObject(false)
+			serializer._internal_DumpObject(element, false)
 		case NodeArray:
-			buffer += element._internal_DumpArray(false)
+			serializer._internal_DumpArray(element, false)
 
 		}
 
 		if index < len(object.object.children)-1 {
-			buffer += ","
+			serializer.buffer += ","
 		}
 	}
 
-	buffer += "}"
-
-	return buffer
+	serializer.buffer += "}"
 }
 
-func (array *AstNode) _internal_DumpArray(silent bool) string {
-	buffer := "["
+func (serializer *Serializer) _internal_DumpArray(array *AstNode, silent bool) {
 	if silent == false {
-		buffer = fmt.Sprintf("\"%s\":[", array.name)
+		serializer.buffer += fmt.Sprintf("\"%s\":[", array.name)
+	} else {
+		serializer.buffer += "["
 	}
 
 	for index, element := range array.array.children {
@@ -91,19 +87,17 @@ func (array *AstNode) _internal_DumpArray(silent bool) string {
 
 		switch element.astNodeType {
 		case NodeValue:
-			buffer += element._internal_DumpValue(true)
+			serializer._internal_DumpValue(element, true)
 		case NodeObject:
-			buffer += element._internal_DumpObject(true)
+			serializer._internal_DumpObject(element, true)
 		case NodeArray:
-			buffer += element._internal_DumpArray(true)
+			serializer._internal_DumpArray(element, true)
 		}
 
 		if index < len(array.array.children)-1 {
-			buffer += ","
+			serializer.buffer += ","
 		}
 	}
 
-	buffer += "]"
-
-	return buffer
+	serializer.buffer += "]"
 }

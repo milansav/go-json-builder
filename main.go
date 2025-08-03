@@ -19,5 +19,5 @@ func main() {
 		}))
 	})
 
-	fmt.Printf("%s\n", root.Dump())
+	fmt.Printf("%s\n", ast.Serializer{}.Dump(root))
 }
