@@ -15,13 +15,13 @@ func _internal_CreateBuilder() *Builder {
 
 func _internal_CreateObject() *AstObject {
 	return &AstObject{
-		children: make([]*AstNode, NODE_DEFAULT_CHILDREN_COUNT),
+		children: make([]*AstNode, 0),
 	}
 }
 
 func _internal_CreateArray() *AstArray {
 	return &AstArray{
-		children: make([]*AstNode, NODE_DEFAULT_CHILDREN_COUNT),
+		children: make([]*AstNode, 0),
 	}
 }
 
@@ -87,7 +87,7 @@ func (array *AstNode) _internal_DumpArray() string {
 			buffer += element._internal_DumpArray()
 		}
 
-		if index < len(array.object.children)-1 {
+		if index < len(array.array.children)-1 {
 			buffer += ","
 		}
 	}

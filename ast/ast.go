@@ -1,5 +1,7 @@
 package ast
 
+import "strconv"
+
 type AstNodeType = int
 type AstPrimitiveType = int
 
@@ -62,6 +64,15 @@ func (builder *Builder) Property(name string, _builder *Builder) *Builder {
 	return builder
 }
 
+func (builder *Builder) Item(_builder *Builder) *Builder {
+	print("builder::root::array", _builder.root.array, "\n")
+	_builder.root.name = strconv.FormatInt(int64(len(builder.root.array.children)), 10)
+
+	builder.root.array.children = append(builder.root.array.children, _builder.root)
+
+	return builder
+}
+
 func Object(_buildfn BuildFn) *Builder {
 	builder := _internal_CreateBuilder()
 
@@ -94,7 +105,7 @@ func Array(_buildFn BuildFn) *Builder {
 	return builder
 }
 
-func Value[T string | float64 | bool](val T) *Builder {
+func Value[T string | float64 | bool | int](val T) *Builder {
 	builder := _internal_CreateBuilder()
 
 	_node := &AstNode{
@@ -111,6 +122,10 @@ func Value[T string | float64 | bool](val T) *Builder {
 		_node.value.astValueType = ValueNumber
 		_node.value._number = new(float64)
 		*_node.value._number = v
+	} else if v, ok := any(val).(int); ok {
+		_node.value.astValueType = ValueNumber
+		_node.value._number = new(float64)
+		*_node.value._number = float64(v)
 	} else if v, ok := any(val).(string); ok {
 		_node.value.astValueType = ValueString
 		_node.value._string = new(string)

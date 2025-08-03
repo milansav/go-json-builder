@@ -14,7 +14,7 @@ func (builder *Builder) Dump() string {
 		case NodeObject:
 			buffer += element._internal_DumpObject()
 		case NodeArray:
-			_internal_NotImplemented("ast::Dump::NodeArray")
+			buffer += element._internal_DumpArray()
 		}
 
 		if index < len(builder.root.object.children)-1 {
