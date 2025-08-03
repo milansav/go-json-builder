@@ -25,8 +25,11 @@ func _internal_CreateArray() *AstArray {
 	}
 }
 
-func (object *AstNode) _internal_DumpValue() string {
-	buffer := fmt.Sprintf("\"%s\":", object.name)
+func (object *AstNode) _internal_DumpValue(silent bool) string {
+	buffer := ""
+	if silent == false {
+		buffer = fmt.Sprintf("\"%s\":", object.name)
+	}
 
 	switch object.value.astValueType {
 	case ValueBool:
@@ -44,19 +47,24 @@ func (object *AstNode) _internal_DumpValue() string {
 	return buffer
 }
 
-func (object *AstNode) _internal_DumpObject() string {
-	buffer := fmt.Sprintf("\"%s\":{", object.name)
+func (object *AstNode) _internal_DumpObject(silent bool) string {
+	buffer := "{"
+
+	if silent == false {
+		buffer = fmt.Sprintf("\"%s\":{", object.name)
+	}
+
 	for index, element := range object.object.children {
 		if element == nil {
 			continue
 		}
 		switch element.astNodeType {
 		case NodeValue:
-			buffer += element._internal_DumpValue()
+			buffer += element._internal_DumpValue(false)
 		case NodeObject:
-			buffer += element._internal_DumpObject()
+			buffer += element._internal_DumpObject(false)
 		case NodeArray:
-			buffer += element._internal_DumpArray()
+			buffer += element._internal_DumpArray(false)
 
 		}
 
@@ -70,8 +78,11 @@ func (object *AstNode) _internal_DumpObject() string {
 	return buffer
 }
 
-func (array *AstNode) _internal_DumpArray() string {
-	buffer := fmt.Sprintf("\"%s\":[", array.name)
+func (array *AstNode) _internal_DumpArray(silent bool) string {
+	buffer := "["
+	if silent == false {
+		buffer = fmt.Sprintf("\"%s\":[", array.name)
+	}
 
 	for index, element := range array.array.children {
 		if element == nil {
@@ -80,11 +91,11 @@ func (array *AstNode) _internal_DumpArray() string {
 
 		switch element.astNodeType {
 		case NodeValue:
-			buffer += element._internal_DumpValue()
+			buffer += element._internal_DumpValue(true)
 		case NodeObject:
-			buffer += element._internal_DumpObject()
+			buffer += element._internal_DumpObject(true)
 		case NodeArray:
-			buffer += element._internal_DumpArray()
+			buffer += element._internal_DumpArray(true)
 		}
 
 		if index < len(array.array.children)-1 {

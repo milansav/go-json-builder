@@ -65,7 +65,6 @@ func (builder *Builder) Property(name string, _builder *Builder) *Builder {
 }
 
 func (builder *Builder) Item(_builder *Builder) *Builder {
-	print("builder::root::array", _builder.root.array, "\n")
 	_builder.root.name = strconv.FormatInt(int64(len(builder.root.array.children)), 10)
 
 	builder.root.array.children = append(builder.root.array.children, _builder.root)

@@ -10,11 +10,11 @@ func (builder *Builder) Dump() string {
 
 		switch element.astNodeType {
 		case NodeValue:
-			buffer += element._internal_DumpValue()
+			buffer += element._internal_DumpValue(false)
 		case NodeObject:
-			buffer += element._internal_DumpObject()
+			buffer += element._internal_DumpObject(false)
 		case NodeArray:
-			buffer += element._internal_DumpArray()
+			buffer += element._internal_DumpArray(false)
 		}
 
 		if index < len(builder.root.object.children)-1 {
